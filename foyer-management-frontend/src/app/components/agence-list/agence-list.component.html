@@ -1,0 +1,55 @@
+<!-- Navbar avec recherche -->
+<app-navbar (search)="onSearch($event)"></app-navbar>
+
+<h2>Liste des agences</h2>
+<div *ngIf="error" style="color:red">{{ error }}</div>
+
+<table cellpadding="5" cellspacing="0">
+  <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Capacité max</th>
+      <th>Localisation</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr
+      *ngFor="let agence of filteredAgences"
+      (click)="selectAgence(agence)"
+      [class.selected]="agence === selectedAgence"
+      style="cursor:pointer"
+    >
+      <td>{{ agence.nom }}</td>
+      <td>{{ agence.capaciteMax }}</td>
+      <td>
+        <iframe
+          *ngIf="agence.adresse"
+          width="250"
+          height="150"
+          style="border:0"
+          loading="lazy"
+          allowfullscreen
+          [src]="getMapUrl(agence.adresse)">
+        </iframe>
+        <span *ngIf="!agence.adresse">Adresse non disponible</span>
+      </td>
+
+      <td>
+        <div *ngIf="authService.hasRole('Admin') ">
+        <button (click)="goToEdit(agence.id); $event.stopPropagation()">Modifier</button></div>
+        <div *ngIf="authService.hasRole('Admin') ">
+        <button (click)="deleteAgence(agence.id); $event.stopPropagation()">Supprimer</button></div>
+      </td>
+   
+    </tr>
+  </tbody>
+</table>
+<div *ngIf="authService.hasRole('Admin') ">
+<button (click)="goToAdd()" class="add-btn">Ajouter une agence</button>
+</div>
+<div *ngIf="selectedAgence">
+  <app-occupation-list [agence]="selectedAgence"></app-occupation-list>
+
+  
+</div>
