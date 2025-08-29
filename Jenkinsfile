@@ -15,28 +15,22 @@ pipeline {
 
         stage('Build Backend') {
             steps {
-                dir('habilitationbna') {
-                    sh 'mvn clean compile'
-                }
+                sh 'mvn clean compile'
             }
         }
 
         stage('Run Tests Backend') {
             steps {
-                dir('habilitationbna') {
-                    sh 'mvn test'
-                }
+                sh 'mvn test'
             }
         }
 
         stage('JaCoCo Coverage') {
             steps {
-                dir('habilitationbna') {
-                    // Génération du rapport JaCoCo
-                    sh 'mvn jacoco:report'
-                }
-                // Publier le rapport JaCoCo dans Jenkins
-                jacoco execPattern: '**/target/jacoco.exec', classPattern: '**/target/classes', sourcePattern: '**/src/main/java'
+                sh 'mvn jacoco:report'
+                jacoco execPattern: '**/target/jacoco*.exec',
+                       classPattern: '**/target/classes',
+                       sourcePattern: '**/src/main/java'
             }
         }
 
@@ -46,28 +40,23 @@ pipeline {
                 SONAR_LOGIN = credentials('sonar-token')
             }
             steps {
-                dir('habilitationbna') {
-                    sh '''
-                        mvn sonar:sonar \
-                          -Dsonar.projectKey=habilitationbna \
-                          -Dsonar.projectName="habilitationbna" \
-                          -Dsonar.host.url=$SONAR_HOST_URL \
-                          -Dsonar.login=$SONAR_LOGIN
-                    '''
-                }
+                sh '''
+                    mvn sonar:sonar \
+                      -Dsonar.projectKey=habilitationbna \
+                      -Dsonar.projectName="habilitationbna" \
+                      -Dsonar.host.url=$SONAR_HOST_URL \
+                      -Dsonar.login=$SONAR_LOGIN
+                '''
             }
         }
 
-        
         stage('Deploy to Nexus') {
             steps {
-                dir('habilitationbna') {
-                    sh 'mvn deploy -Dmaven.test.skip=true'
-                }
+                sh 'mvn deploy -Dmaven.test.skip=true'
             }
         }
-        
-    
+    }  
+
     post {
         success {
             mail to: 'werteninadra@gmail.com',
