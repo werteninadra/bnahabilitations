@@ -9,7 +9,7 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 git branch: 'main',
-                    url: 'https://github.com/nadra-wertani/habilitationsbna.git'
+                    url: 'https://github.com/werteninadra/bnahabilitations.git'
             }
         }
 
