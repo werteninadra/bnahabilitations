@@ -14,7 +14,7 @@
 
     <groupId>com.bna</groupId>
     <artifactId>habilitationbna</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>habilitationbna</name>
 
     <properties>
@@ -170,7 +170,14 @@
         </dependency>
 
     </dependencies>
+    <distributionManagement>
+        <repository>
+            <id>deploymentRepo</id>
+            <name>Nexus Releases</name>
+            <url>http://localhost:8081/repository/maven-releases/</url>
+        </repository>
 
+    </distributionManagement>
     <build>
         <plugins>
 
