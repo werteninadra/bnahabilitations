@@ -1,24 +1,24 @@
-# Étape 1 : Builder Angular avec Node 20
+# Ã‰tape 1 : Builder Angular avec Node 20
 FROM node:20 AS build
 WORKDIR /app
 
 # Copier les fichiers package.json et package-lock.json
 COPY package*.json ./
 
-# Installer les dépendances
+# Installer les dÃ©pendances
 RUN npm install
 
 # Copier le reste du code
 COPY . .
 
 # Builder Angular en mode production
-RUN npm run build --prod
+RUN npm run build -- --configuration production
 
-# Étape 2 : Servir via Nginx
+# Ã‰tape 2 : Servir via Nginx
 FROM nginx:alpine
 
 # Copier les fichiers construits dans Nginx
-COPY --from=build /app/dist/* /usr/share/nginx/html
+COPY --from=build /app/dist/foyer-management-frontend /usr/share/nginx/html
 
 # Copier la configuration Nginx
 COPY nginx.conf /etc/nginx/conf.d/default.conf
