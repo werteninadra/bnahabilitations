@@ -5,12 +5,13 @@
   "projects": {
     "foyer-management-frontend": {
       "projectType": "application",
+      "schematics": {},
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
+          "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "dist/foyer-management-frontend",
             "index": "src/index.html",
@@ -24,9 +25,6 @@
               "src/styles.css"
             ],
             "scripts": [],
-            "server": "src/main.server.ts",
-            "prerender": false,
-            "ssr": {"entry": "src/server.ts"},
             "allowedCommonJsDependencies": ["leaflet"]
           },
           "configurations": {
@@ -35,12 +33,15 @@
                 {"type": "initial","maximumWarning": "1MB","maximumError": "2MB"},
                 {"type": "anyComponentStyle","maximumWarning": "20kB","maximumError": "50kB"}
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "optimization": true,
+              "sourceMap": false,
+              "extractLicenses": true
             },
             "development": {
               "optimization": false,
-              "extractLicenses": false,
-              "sourceMap": true
+              "sourceMap": true,
+              "extractLicenses": false
             }
           },
           "defaultConfiguration": "production"
@@ -64,7 +65,7 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "polyfills": ["zone.js","zone.js/testing"],
+            "polyfills": ["zone.js", "zone.js/testing"],
             "tsConfig": "tsconfig.spec.json",
             "assets": [{"glob": "**/*","input": "public"}],
             "styles": [
