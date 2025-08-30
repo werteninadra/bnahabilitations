@@ -73,10 +73,10 @@ pipeline {
         }
 
         // ------------------------------------
-        stage('Build Docker Image') {
+        stage('Build Docker Images via Compose') {
             steps {
-                script {
-                    docker.build("nadrawertani/habilitationbna:${BUILD_NUMBER}")
+                dir('.') {
+                    sh 'docker-compose -f docker-compose.yml build'
                 }
             }
         }
@@ -91,12 +91,13 @@ pipeline {
         }
 
         // ------------------------------------
-        stage('Push Docker Image') {
+        stage('Push Docker Images') {
             steps {
                 script {
-                    sh "docker push nadrawertani/habilitationbna:${BUILD_NUMBER}"
-                    sh "docker tag nadrawertani/habilitationbna:${BUILD_NUMBER} nadrawertani/habilitationbna:latest"
-                    sh "docker push nadrawertani/habilitationbna:latest"
+                    sh 'docker tag habilitationbna nadrawertani/habilitationbna:latest'
+                    sh 'docker tag foyer-management-frontend nadrawertani/foyer-management-frontend:latest'
+                    sh 'docker push nadrawertani/habilitationbna:latest'
+                    sh 'docker push nadrawertani/foyer-management-frontend:latest'
                 }
             }
         }
@@ -114,6 +115,12 @@ pipeline {
                     """
                 }
             }
+        }
+    }
+
+    post {
+        always {
+            echo "Build finished with status: ${currentBuild.currentResult}"
         }
     }
 }
