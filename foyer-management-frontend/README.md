@@ -1,59 +1,64 @@
-# FoyerManagementFrontend
+# 📌 Habilitation BNA
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.8.
+Application web de gestion des habilitations pour la **Banque Nationale Agricole (BNA)**.  
+Elle permet de gérer les utilisateurs, leurs rôles et les autorisations via une interface sécurisée basée sur **Keycloak**.
 
-## Development server
+---
 
-To start a local development server, run:
+## 🛠️ Technologies utilisées
+
+- **Backend** : Spring Boot (Java 17+)
+- **Frontend** : Angular
+- **Sécurité** : Keycloak (authentification & gestion des rôles)
+- **Base de données** : MySQL
+- **ORM** : Spring Data JPA / Hibernate
+
+---
+
+## 🔐 Fonctionnalités principales
+
+- 🔑 Authentification centralisée via **Keycloak**
+- 👥 Gestion des utilisateurs (CRUD)
+- 🛡️ Gestion des rôles et autorisations
+- ⚙️ Attribution automatique des rôles selon profil
+- 📊 Dashboard personnalisé selon les rôles :
+  - **Scrum Master** : gestion complète
+  - **Product Owner** : vue projet étendue
+  - **Développeur** : accès limité aux tâches/messages
+
+---
+
+## ⚙️ Configuration Keycloak (extrait)
+
+1. Créer un **realm** : `habilitation-bna`
+2. Créer un **client** : `habilitation-client`
+   - Type : confidential / public
+   - Redirect URI : `http://localhost:8080/*`
+3. Définir les **rôles** :
+   - `ROLE_ADMIN`
+   - `ROLE_USER`
+   - `ROLE_SCRUM_MASTER`
+4. Ajouter les **utilisateurs** et assigner les rôles
+
+---
+
+## 🚀 Lancer l’application localement
+
+### 🧩 Prérequis
+- Java 17
+- MySQL
+- Keycloak (version 22+ recommandée)
+- Maven
+
+### 📦 Étapes
 
 ```bash
-ng serve
-```
+# Cloner le projet
+git clone https://github.com/ton-utilisateur/habilitation-bna.git
+cd habilitation-bna
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+# Configurer application.properties
+# (Base de données, Keycloak URI, etc.)
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+# Démarrer l'application Spring Boot
+./mvnw spring-boot:run
