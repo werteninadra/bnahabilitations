@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+  db:
+    image: mysql:5.6
+    container_name: bna-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: bna
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  habilitationbna:
+    build: ./habilitationbna
+    container_name: habilitationbna
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/habilitaionbna?useSSL=false
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    depends_on:
+      - db
+
+  foyer-management-frontend:
+    build: ./foyer-management-frontend
+    container_name: foyer-management-frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - habilitationbna
+
+volumes:
+  db_data:

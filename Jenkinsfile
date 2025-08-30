@@ -6,6 +6,7 @@ pipeline {
     }
 
     stages {
+        // ------------------------------------
         stage('Checkout Code') {
             steps {
                 git branch: 'main',
@@ -13,6 +14,7 @@ pipeline {
             }
         }
 
+        // ------------------------------------
         stage('Build Backend') {
             steps {
                 dir('habilitationbna') {
@@ -21,6 +23,7 @@ pipeline {
             }
         }
 
+        // ------------------------------------
         stage('Run Tests Backend') {
             steps {
                 dir('habilitationbna') {
@@ -29,6 +32,7 @@ pipeline {
             }
         }
 
+        // ------------------------------------
         stage('JaCoCo Coverage') {
             steps {
                 dir('habilitationbna') {
@@ -40,6 +44,7 @@ pipeline {
             }
         }
 
+        // ------------------------------------
         stage('SonarQube Analysis') {
             environment {
                 SONAR_HOST_URL = 'http://localhost:9000'
@@ -58,6 +63,7 @@ pipeline {
             }
         }
 
+        // ------------------------------------
         stage('Deploy to Nexus') {
             steps {
                 dir('habilitationbna') {
@@ -65,7 +71,51 @@ pipeline {
                 }
             }
         }
-    }  
+
+        // ------------------------------------
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    docker.build("nadrawertani/habilitationbna:${BUILD_NUMBER}")
+                }
+            }
+        }
+
+        // ------------------------------------
+        stage('Docker Login') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+                }
+            }
+        }
+
+        // ------------------------------------
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    sh "docker push nadrawertani/habilitationbna:${BUILD_NUMBER}"
+                    sh "docker tag nadrawertani/habilitationbna:${BUILD_NUMBER} nadrawertani/habilitationbna:latest"
+                    sh "docker push nadrawertani/habilitationbna:latest"
+                }
+            }
+        }
+
+        // ------------------------------------
+        stage('Grafana Metrics') {
+            steps {
+                script {
+                    def status = currentBuild.currentResult == 'SUCCESS' ? 1 : 0
+                    sh """
+                        cat <<EOF | curl --data-binary @- http://localhost:9090/metrics/job/${env.JOB_NAME}/build/${env.BUILD_NUMBER}
+                        # TYPE jenkins_build_status gauge
+                        jenkins_build_status{job="${env.JOB_NAME}",build="${env.BUILD_NUMBER}"} ${status}
+                        EOF
+                    """
+                }
+            }
+        }
+    }
 
     post {
         success {
