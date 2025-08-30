@@ -116,19 +116,4 @@ pipeline {
             }
         }
     }
-
-    post {
-        success {
-            mail to: 'werteninadra@gmail.com',
-                 subject: "✅ Pipeline réussie : ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                 body: "La pipeline ${env.JOB_NAME} #${env.BUILD_NUMBER} a été exécutée avec succès.\nConsultez les logs : ${env.BUILD_URL}"
-            echo 'Pipeline exécutée avec succès'
-        }
-        failure {
-            mail to: 'werteninadra@gmail.com',
-                 subject: "❌ Échec de la pipeline : ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                 body: "La pipeline ${env.JOB_NAME} #${env.BUILD_NUMBER} a échoué.\nConsultez les logs : ${env.BUILD_URL}"
-            echo 'La pipeline a échoué'
-        }
-    }
 }
