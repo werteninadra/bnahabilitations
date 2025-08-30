@@ -72,36 +72,33 @@ pipeline {
             }
         }
 
-        // ------------------------------------
-        stage('Build Docker Images via Compose') {
+     // ------------------------------------
+stage('Build Docker Images via Compose') {
     steps {
-        dir('bnahabilitations') {
-            sh 'docker compose -f docker-compose.yml build'
+        sh 'docker compose -f docker-compose.yml build'
+    }
+}
+
+// ------------------------------------
+stage('Docker Login') {
+    steps {
+        withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+            sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
         }
     }
 }
 
-
-        // ------------------------------------
-        stage('Docker Login') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
-                }
-            }
+// ------------------------------------
+stage('Push Docker Images') {
+    steps {
+        script {
+            sh 'docker tag habilitationbna nadrawertani/habilitationbna:latest'
+            sh 'docker tag foyer-management-frontend nadrawertani/foyer-management-frontend:latest'
+            sh 'docker push nadrawertani/habilitationbna:latest'
+            sh 'docker push nadrawertani/foyer-management-frontend:latest'
         }
-
-        // ------------------------------------
-        stage('Push Docker Images') {
-            steps {
-                script {
-                    sh 'docker tag habilitationbna nadrawertani/habilitationbna:latest'
-                    sh 'docker tag foyer-management-frontend nadrawertani/foyer-management-frontend:latest'
-                    sh 'docker push nadrawertani/habilitationbna:latest'
-                    sh 'docker push nadrawertani/foyer-management-frontend:latest'
-                }
-            }
-        }
+    }
+}
 
         // ------------------------------------
         stage('Grafana Metrics') {
