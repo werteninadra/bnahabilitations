@@ -15,7 +15,7 @@ pipeline {
 
         stage('Build Backend') {
             steps {
-                dir('.habilitationbna') {
+                dir('habilitationbna') {
                     sh 'mvn clean compile'
                 }
             }
@@ -23,7 +23,7 @@ pipeline {
 
         stage('Run Tests Backend') {
             steps {
-                dir('.habilitationbna') {
+                dir('habilitationbna') {
                     sh 'mvn test'
                 }
             }
@@ -31,7 +31,7 @@ pipeline {
 
         stage('JaCoCo Coverage') {
             steps {
-                dir('.habilitationbna') {
+                dir('habilitationbna') {
                     sh 'mvn jacoco:report'
                     jacoco execPattern: '**/target/jacoco*.exec',
                            classPattern: '**/target/classes',
@@ -46,7 +46,7 @@ pipeline {
                 SONAR_LOGIN = credentials('sonar-token')
             }
             steps {
-                dir('.habilitationbna') {
+                dir('habilitationbna') {
                     sh '''
                         mvn sonar:sonar \
                           -Dsonar.projectKey=habilitationbna \
@@ -60,7 +60,7 @@ pipeline {
 
         stage('Deploy to Nexus') {
             steps {
-                dir('.habilitationbna') {
+                dir('habilitationbna') {
                     sh 'mvn deploy -Dmaven.test.skip=true'
                 }
             }
