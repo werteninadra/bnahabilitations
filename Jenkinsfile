@@ -74,12 +74,13 @@ pipeline {
 
         // ------------------------------------
         stage('Build Docker Images via Compose') {
-            steps {
-                dir('.') {
-                    sh 'docker-compose -f docker-compose.yml build'
-                }
-            }
+    steps {
+        dir('bnahabilitations') {
+            sh 'docker compose -f docker-compose.yml build'
         }
+    }
+}
+
 
         // ------------------------------------
         stage('Docker Login') {
